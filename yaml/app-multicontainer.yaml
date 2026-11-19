@@ -1,0 +1,38 @@
+
+#                                                                               
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+  labels:
+    app: demo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+        - name: demo-app
+          image: den-vasyliev/go-demo-app:v1.0.0
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: logs
+              mountPath: /var/log/app
+        - name: log-agent
+          image: busybox
+          command:
+            - sh
+            - -c
+            - tail -F /var/log/app/app.log
+          volumeMounts:
+            - name: logs
+              mountPath: /var/log/app
+      volumes:
+        - name: logs
+          emptyDir: {}

@@ -1,0 +1,24 @@
+
+#                                                                               
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: demo-app-cronjob
+  labels:
+    app: demo-app
+spec:
+  schedule: '*/5 * * * *'
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: demo-app
+              image: busybox
+              command:
+                - sh
+                - -c
+                - date; echo Hello from demo-app cronjob
+          restartPolicy: OnFailure
